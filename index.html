@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرصد العبدلية | دليل العقارات</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Tajawal & Amiri -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js for Market Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet CSS for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        najd: {
+                            dark: '#5a4634',      
+                            clay: '#967158',      
+                            sand: '#e0b888',      
+                            cream: '#f2ece4',     
+                            white: '#faf8f5',     
+                            border: '#d4c6b6',    
+                            card: '#fdfaf6',      
+                            accent: '#4a6b46',
+                            logogreen: '#0a2e26' 
+                        }
+                    },
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                        amiri: ['Amiri', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        if (localStorage.getItem('bourse_theme') === 'dark' || (!('bourse_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f2ece4;
+            background-image: radial-gradient(#cba377 0.6px, transparent 0.6px), radial-gradient(#cba377 0.6px, #f2ece4 0.6px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            color: #5a4634;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dark body {
+            background-color: #041410;
+            background-image: radial-gradient(#0a2e26 1px, transparent 1px), radial-gradient(#0a2e26 1px, #041410 1px);
+            color: #e0b888;
+        }
+
+        /* Splash Screen Animation */
+        #splash-screen {
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+        .splash-logo-animate {
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+        @keyframes floatLogo {
+            0% { transform: translateY(0px) scale(0.95); opacity: 0.9; }
+            50% { transform: translateY(-10px) scale(1); opacity: 1; }
+            100% { transform: translateY(0px) scale(0.95); opacity: 0.9; }
+        }
+
+        .najd-triangles-top {
+            background-color: #967158;
+            height: 16px;
+            clip-path: polygon(
+                0% 100%, 5% 0%, 10% 100%, 15% 0%, 20% 100%, 25% 0%, 30% 100%, 35% 0%, 40% 100%, 45% 0%, 50% 100%, 55% 0%, 60% 100%, 65% 0%, 70% 100%, 75% 0%, 80% 100%, 85% 0%, 90% 100%, 95% 0%, 100% 100%
+            );
+        }
+
+        .najd-triangles-bottom {
+            background-color: #967158;
+            height: 16px;
+            clip-path: polygon(
+                0% 0%, 5% 100%, 10% 0%, 15% 100%, 20% 0%, 25% 100%, 30% 0%, 35% 100%, 40% 0%, 45% 100%, 50% 0%, 55% 100%, 60% 0%, 65% 100%, 70% 0%, 75% 100%, 80% 0%, 85% 100%, 90% 0%, 95% 100%, 100% 0%
+            );
+        }
+
+        .clay-card {
+            background-color: #fdfaf6;
+            border: 1px solid #d4c6b6;
+            box-shadow: 0 10px 25px -5px rgba(90, 70, 52, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .clay-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -5px rgba(10, 46, 38, 0.15);
+            border-color: #0a2e26;
+        }
+
+        .dark .clay-card {
+            background-color: #071f1a;
+            border-color: #0a2e26;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        
+        .dark .clay-card:hover {
+            border-color: #e0b888;
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        .glass-modal {
+            background: rgba(242, 236, 228, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 50px rgba(10, 46, 38, 0.3);
+        }
+        
+        .dark .glass-modal {
+            background: rgba(4, 20, 16, 0.9);
+            border: 1px solid rgba(224, 184, 136, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px; 
+            background-image: url('Bujairi.jpg'); 
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px) grayscale(20%);
+            opacity: 0.25; 
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f2ece4; }
+        ::-webkit-scrollbar-thumb { background: #0a2e26; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #967158; }
+
+        .dark::-webkit-scrollbar-track { background: #041410; }
+        .dark::-webkit-scrollbar-thumb { background: #e0b888; }
+        .dark::-webkit-scrollbar-thumb:hover { background: #cba377; }
+        
+        /* Map custom styling */
+        #district-map {
+            width: 100%;
+            height: 350px;
+            border-radius: 12px;
+            z-index: 10;
+        }
+        
+        /* Fix for API key requirement: Use CSS filter on free OSM tiles for dark mode */
+        .dark .leaflet-layer,
+        .dark .leaflet-control-zoom-in,
+        .dark .leaflet-control-zoom-out,
+        .dark .leaflet-control-attribution {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+
+        .leaflet-container {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+        .leaflet-popup-content-wrapper {
+            background: #fdfaf6;
+            color: #0a2e26;
+            border: 2px solid #d4c6b6;
+            border-radius: 12px;
+            text-align: right;
+            direction: rtl;
+        }
+        .dark .leaflet-popup-content-wrapper {
+            background: #071f1a;
+            color: #e0b888;
+            border-color: #0a2e26;
+        }
+        .leaflet-popup-tip {
+            background: #fdfaf6;
+            border-top: 2px solid #d4c6b6;
+            border-left: 2px solid #d4c6b6;
+        }
+        .dark .leaflet-popup-tip {
+            background: #071f1a;
+            border-top: 2px solid #0a2e26;
+            border-left: 2px solid #0a2e26;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-najd-sand selection:text-najd-logogreen dark:selection:bg-najd-logogreen dark:selection:text-najd-sand overflow-hidden">
+
+    <!-- شاشة البداية (Splash Screen) -->
+    <div id="splash-screen" class="fixed inset-0 z-[100] bg-najd-logogreen flex flex-col items-center justify-center">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#e0b888 1px, transparent 1px); background-size: 24px 24px;"></div>
+        
+        <div class="relative z-10 text-center">
+            <img src="شعار مرصد العبدلية.png" alt="مرصد العبدلية" class="h-40 sm:h-56 w-auto mx-auto splash-logo-animate drop-shadow-[0_15px_35px_rgba(224,184,136,0.25)]">
+            
+            <div class="mt-8 flex justify-center items-center gap-3">
+                <div class="w-3 h-3 bg-najd-sand rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                <div class="w-3 h-3 bg-najd-sand rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-3 h-3 bg-najd-sand rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+            </div>
+            
+            <p class="mt-6 font-amiri text-najd-sand text-lg md:text-xl font-bold tracking-wider opacity-90 animate-pulse">
+                «مَثْوَى الأَصَالَةِ وَعِزِّ المَعْنَى»
+            </p>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed top-20 left-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- الشريط العلوي -->
+    <div class="bg-najd-logogreen text-najd-cream text-xs sm:text-sm py-2 px-4 shadow-md border-b-2 border-najd-sand/50">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-najd-sand animate-pulse"></span>
+                <span class="font-bold text-najd-sand">المؤشر مباشر:</span>
+                <span id="update-status-badge" class="text-najd-cream/90">محاكاة البورصة العقارية (تحديث كل 24 ساعة)</span>
+            </div>
+            <div class="flex items-center gap-4 text-najd-sand">
+                <span><i class="fa-regular fa-clock ml-1"></i> التحديث القادم: <strong id="next-update-timer" class="text-white dir-ltr">--:--:--</strong></span>
+                <button onclick="forceRefreshData()" title="تحديث الأسعار الآن" class="hover:text-white transition-colors">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <div class="w-px h-4 bg-najd-sand/30"></div>
+                <button onclick="toggleTheme()" title="تبديل المظهر (داكن/فاتح)" class="hover:text-white transition-colors text-base">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الهيدر -->
+    <header class="relative bg-najd-logogreen text-najd-cream pt-8 pb-10 shadow-xl overflow-hidden">
+        <div class="najd-triangles-top absolute top-0 left-0 right-0 opacity-80 z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            
+            <div class="mb-4 flex justify-center">
+                <img src="شعار مرصد العبدلية.png" alt="شعار مرصد العبدلية لعقارات الرياض" class="h-28 sm:h-36 w-auto object-contain rounded-2xl shadow-2xl border-2 border-najd-sand/80 bg-najd-logogreen p-1 backdrop-blur-sm">
+            </div>
+
+                            </span>
+                <h1 class="font-amiri font-bold tracking-wide text-najd-sand drop-shadow-lg" style="font-size: 2.3rem; margin-top: 18px; line-height: 1.5; color: #e0b888;">
+                    مَرْصَدُ العَبْدَلِيَّةِ العَقَارِي
+                </h1>
+            </div>
+            <p class="text-sm sm:text-lg max-w-2xl mx-auto text-najd-sand/90 font-medium leading-relaxed">
+                مرصد رقمي رصين لرصد حركة ومتوسط أسعار المتر المربع في الرياض، جدة، والخبر وفقاً لمؤشرات السوق
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto mt-8 text-right relative z-10">
+                <div class="bg-najd-dark/40 backdrop-blur-md border border-najd-sand/30 shadow-lg rounded-xl p-4 text-center">
+                    <span class="block text-xs text-najd-sand mb-1 font-bold">متوسط سعر المتر (عام)</span>
+                    <span id="stat-avg-price" class="text-xl sm:text-2xl font-black text-white drop-shadow-md">0</span>
+                    <span class="text-xs text-najd-cream">ريال/م²</span>
+                </div>
+                <div class="bg-najd-dark/40 backdrop-blur-md border border-najd-sand/30 shadow-lg rounded-xl p-4 text-center">
+                    <span class="block text-xs text-najd-sand mb-1 font-bold">أعلى حي سعراً</span>
+                    <span id="stat-highest-district" class="text-base sm:text-lg font-bold text-white truncate block drop-shadow-md">-</span>
+                    <span id="stat-highest-price" class="text-xs text-najd-sand font-bold">0 ر.س</span>
+                </div>
+                <div class="bg-najd-dark/40 backdrop-blur-md border border-najd-sand/30 shadow-lg rounded-xl p-4 text-center">
+                    <span class="block text-xs text-najd-sand mb-1 font-bold">أنسب حي سعراً</span>
+                    <span id="stat-lowest-district" class="text-base sm:text-lg font-bold text-white truncate block drop-shadow-md">-</span>
+                    <span id="stat-lowest-price" class="text-xs text-najd-cream font-bold drop-shadow-md">0 ر.س</span>
+                </div>
+                <div class="bg-najd-dark/40 backdrop-blur-md border border-najd-sand/30 shadow-lg rounded-xl p-4 text-center">
+                    <span class="block text-xs text-najd-sand mb-1 font-bold">عدد الأحياء المرصودة</span>
+                    <span id="stat-total-districts" class="text-xl sm:text-2xl font-black text-white drop-shadow-md">0</span>
+                    <span class="text-xs text-najd-cream">حيّاً مفعّلاً</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="najd-triangles-bottom absolute bottom-0 left-0 right-0 opacity-80 z-10"></div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-8 relative">
+
+        <section class="clay-card p-5 rounded-2xl border-2 border-najd-border dark:border-[#0a2e26] shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                
+                <div class="md:col-span-3 relative">
+                    <i class="fa-solid fa-city absolute right-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand"></i>
+                    <select id="cityFilter" onchange="updateRegions(); applyFilters()" 
+                            class="w-full pr-11 pl-4 py-3 bg-najd-white dark:bg-[#071f1a] border-2 border-najd-border dark:border-[#0a2e26] rounded-xl focus:outline-none focus:border-najd-logogreen dark:focus:border-najd-sand text-najd-logogreen dark:text-najd-sand font-bold appearance-none cursor-pointer">
+                        <option value="all" selected>كل المدن</option>
+                        <option value="الرياض">الرياض</option>
+                        <option value="جدة">جدة</option>
+                        <option value="الخبر">الخبر</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute left-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand pointer-events-none text-xs"></i>
+                </div>
+
+                <div class="md:col-span-4 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand"></i>
+                    <input type="text" id="searchInput" oninput="applyFilters()" 
+                           placeholder="ابحث باسم الحي..." 
+                           class="w-full pr-11 pl-4 py-3 bg-najd-white dark:bg-[#071f1a] border-2 border-najd-border dark:border-[#0a2e26] rounded-xl focus:outline-none focus:border-najd-logogreen dark:focus:border-najd-sand text-najd-logogreen dark:text-najd-sand placeholder-najd-logogreen/50 dark:placeholder-najd-sand/50 transition-colors font-medium">
+                </div>
+
+                <div class="md:col-span-3 relative">
+                    <i class="fa-solid fa-compass absolute right-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand"></i>
+                    <select id="regionFilter" onchange="applyFilters()" 
+                            class="w-full pr-11 pl-4 py-3 bg-najd-white dark:bg-[#071f1a] border-2 border-najd-border dark:border-[#0a2e26] rounded-xl focus:outline-none focus:border-najd-logogreen dark:focus:border-najd-sand text-najd-logogreen dark:text-najd-sand font-medium appearance-none cursor-pointer">
+                        <option value="all">كل المناطق</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute left-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand pointer-events-none text-xs"></i>
+                </div>
+
+                <div class="md:col-span-2 relative">
+                    <i class="fa-solid fa-arrow-down-up-wide absolute right-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand"></i>
+                    <select id="sortOption" onchange="applyFilters()" 
+                            class="w-full pr-11 pl-4 py-3 bg-najd-white dark:bg-[#071f1a] border-2 border-najd-border dark:border-[#0a2e26] rounded-xl focus:outline-none focus:border-najd-logogreen dark:focus:border-najd-sand text-najd-logogreen dark:text-najd-sand font-medium appearance-none cursor-pointer text-sm">
+                        <option value="default">ترتيب</option>
+                        <option value="price-desc">الأعلى سعراً</option>
+                        <option value="price-asc">الأقل سعراً</option>
+                        <option value="change-desc">الأعلى ارتفاعاً</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute left-4 top-1/2 -translate-y-1/2 text-najd-logogreen dark:text-najd-sand pointer-events-none text-xs"></i>
+                </div>
+
+            </div>
+
+            <div class="flex flex-wrap justify-between items-center mt-4 pt-4 border-t border-najd-border/60 dark:border-[#0a2e26]/60 text-xs text-najd-logogreen dark:text-najd-sand font-medium">
+                <div class="flex items-center gap-2" id="view-mode-buttons">
+                    <button id="view-cards-btn" onclick="setViewMode('cards')" class="px-3 py-1.5 rounded-lg border transition-all">
+                        <i class="fa-solid fa-grid-2 ml-1"></i> بطاقات
+                    </button>
+                    <button id="view-table-btn" onclick="setViewMode('table')" class="px-3 py-1.5 rounded-lg border transition-all">
+                        <i class="fa-solid fa-table-list ml-1"></i> جدول
+                    </button>
+                    <button id="view-chart-btn" onclick="setViewMode('chart')" class="px-3 py-1.5 rounded-lg border transition-all">
+                        <i class="fa-solid fa-chart-bar ml-1"></i> رسم بياني
+                    </button>
+                </div>
+
+                <div class="text-najd-logogreen dark:text-najd-sand font-bold mt-2 sm:mt-0">
+                    عدد الأحياء: <span id="displayed-count" class="text-najd-clay dark:text-[#cba377]">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم البطاقات -->
+        <section id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        </section>
+
+        <!-- قسم الجدول -->
+        <section id="table-container" class="hidden clay-card rounded-2xl border-2 border-najd-border dark:border-[#0a2e26] overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-najd-logogreen dark:bg-[#0a2e26] text-najd-sand text-xs sm:text-sm font-bold border-b border-najd-sand dark:border-[#124236]">
+                            <th class="p-4">المدينة</th>
+                            <th class="p-4">الحي</th>
+                            <th class="p-4">المنطقة</th>
+                            <th class="p-4">متوسط السعر</th>
+                            <th class="p-4">التغير اليومي</th>
+                            <th class="p-4">مستوى الطلب</th>
+                            <th class="p-4 text-center">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-najd-border/60 dark:divide-[#0a2e26] text-sm">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- قسم الرسم البياني -->
+        <section id="chart-container" class="hidden clay-card rounded-2xl border-2 border-najd-border dark:border-[#0a2e26] p-6 shadow-sm">
+            <div class="mb-4 text-center">
+                <h3 class="font-amiri text-2xl font-bold text-najd-logogreen dark:text-najd-sand">مقارنة متوسط أسعار الأحياء المعروضة</h3>
+                <p class="text-najd-clay dark:text-najd-sand/70 text-sm">يوضح الرسم البياني الأسعار الحالية للأحياء حسب الفلترة</p>
+            </div>
+            <div class="relative h-96 w-full">
+                <canvas id="marketChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- نافذة الحاسبة -->
+    <div id="calcModal" class="fixed inset-0 bg-najd-logogreen/70 dark:bg-[#03120f]/80 backdrop-blur-sm z-[70] flex items-center justify-center hidden p-4 transition-opacity">
+        <div class="glass-modal rounded-3xl max-w-md w-full p-1 shadow-2xl relative border-najd-sand/50 dark:border-najd-sand/20 border">
+            <div class="bg-najd-white/95 dark:bg-[#071f1a]/95 backdrop-blur-md rounded-[22px] p-6 relative">
+                <button onclick="closeModal('calcModal')" class="absolute top-5 left-5 w-8 h-8 flex items-center justify-center rounded-full bg-najd-cream dark:bg-[#041410] text-najd-logogreen dark:text-najd-sand hover:text-najd-white dark:hover:text-[#041410] hover:bg-najd-logogreen dark:hover:bg-najd-sand transition-colors border border-najd-border dark:border-[#0a2e26] z-10">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                
+                <div class="text-center mb-6">
+                    <div class="inline-block p-3 rounded-full bg-najd-logogreen dark:bg-najd-sand text-najd-sand dark:text-[#041410] shadow-inner mb-2 border border-najd-sand/50 dark:border-[#041410]/50">
+                        <i class="fa-solid fa-calculator text-xl"></i>
+                    </div>
+                    <h3 class="font-amiri text-2xl font-bold text-najd-logogreen dark:text-najd-sand">حاسبة القيمة التقديرية</h3>
+                    <p class="text-xs text-najd-clay dark:text-najd-sand/70 mt-1">احسب السعر الإجمالي للأرض بناءً على سعر المتر للحي</p>
+                </div>
+
+                <div class="space-y-4 text-right">
+                    <div>
+                        <label class="block text-xs font-bold text-najd-logogreen dark:text-najd-sand mb-1">اختر الحي:</label>
+                        <select id="modal-district-select" onchange="calculateEstimatedTotal()" class="w-full p-3 bg-najd-white dark:bg-[#041410] border border-najd-border dark:border-[#0a2e26] rounded-xl text-sm text-najd-logogreen dark:text-najd-sand focus:border-najd-logogreen dark:focus:border-najd-sand outline-none cursor-pointer">
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-najd-logogreen dark:text-najd-sand mb-1">مساحة الأرض (متر مربع):</label>
+                        <input type="number" id="modal-area-input" value="400" oninput="calculateEstimatedTotal()" class="w-full p-3 bg-najd-white dark:bg-[#041410] border border-najd-border dark:border-[#0a2e26] rounded-xl text-sm text-najd-logogreen dark:text-najd-sand focus:border-najd-logogreen dark:focus:border-najd-sand outline-none">
+                    </div>
+
+                    <div class="p-4 bg-najd-cream dark:bg-[#041410] border border-najd-sand/60 dark:border-[#0a2e26] rounded-xl text-center shadow-inner mt-2">
+                        <span class="text-xs text-najd-logogreen dark:text-najd-sand block mb-1 font-bold">القيمة الإجمالية التقديرية</span>
+                        <span id="modal-total-price" class="text-3xl font-black text-najd-logogreen dark:text-najd-sand drop-shadow-sm">0</span>
+                        <span class="text-xs text-najd-clay dark:text-najd-sand/70 font-bold">ريال سعودي</span>
+                    </div>
+                </div>
+
+                <button onclick="closeModal('calcModal')" class="w-full mt-5 py-3 bg-najd-logogreen dark:bg-najd-sand text-najd-sand dark:text-[#041410] rounded-xl font-bold text-sm hover:bg-najd-dark dark:hover:bg-[#cba377] transition-colors shadow">
+                    إغلاق الحاسبة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الخريطة -->
+    <div id="mapModal" class="fixed inset-0 bg-najd-logogreen/70 dark:bg-[#03120f]/80 backdrop-blur-sm z-[70] flex items-center justify-center hidden p-4 transition-opacity">
+        <div class="glass-modal rounded-3xl max-w-2xl w-full p-1 shadow-2xl relative border-najd-sand/50 dark:border-najd-sand/20 border">
+            <div class="bg-najd-white/95 dark:bg-[#071f1a]/95 backdrop-blur-md rounded-[22px] p-6 relative">
+                <button onclick="closeModal('mapModal')" class="absolute top-5 left-5 w-8 h-8 flex items-center justify-center rounded-full bg-najd-cream dark:bg-[#041410] text-najd-logogreen dark:text-najd-sand hover:text-najd-white dark:hover:text-[#041410] hover:bg-najd-logogreen dark:hover:bg-najd-sand transition-colors border border-najd-border dark:border-[#0a2e26] z-20 shadow-md">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                
+                <div class="text-center mb-4">
+                    <div class="inline-block p-2 rounded-full bg-najd-logogreen dark:bg-najd-sand text-najd-sand dark:text-[#041410] shadow-inner mb-2 border border-najd-sand/50 dark:border-[#041410]/50">
+                        <i class="fa-solid fa-map-location-dot text-lg"></i>
+                    </div>
+                    <h3 class="font-amiri text-2xl font-bold text-najd-logogreen dark:text-najd-sand inline-block mr-2 align-middle">موقع الحي الجغرافي</h3>
+                    <p id="map-modal-title" class="text-sm font-bold text-najd-clay dark:text-[#cba377] mt-1"></p>
+                </div>
+
+                <!-- حاوية الخريطة -->
+                <div class="relative w-full p-1 bg-najd-border/50 dark:bg-[#0a2e26] rounded-[14px]">
+                    <div id="district-map"></div>
+                </div>
+
+                <button onclick="closeModal('mapModal')" class="w-full mt-4 py-3 bg-najd-logogreen dark:bg-najd-sand text-najd-sand dark:text-[#041410] rounded-xl font-bold text-sm hover:bg-najd-dark dark:hover:bg-[#cba377] transition-colors shadow">
+                    العودة للقائمة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer class="bg-najd-logogreen text-najd-cream mt-12 border-t-4 border-najd-sand relative">
+        <div class="najd-triangles-top absolute -top-4 left-0 right-0 opacity-80"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-right">
+                <div>
+                    <h3 class="font-amiri text-xl font-bold text-najd-sand">مَرْصَدُ العَبْدَلِيَّةِ العَقَارِي</h3>
+                    <p class="text-xs text-najd-cream/70 mt-1">
+                        مرصد مستقل لرصد حركة ومتوسط أسعار المتر المربع في المملكة.
+                    </p>
+                </div>
+                <div class="text-xs text-najd-sand/80 border-t md:border-t-0 md:border-r border-najd-sand/30 pt-4 md:pt-0 md:pr-6">
+                    <p>جميع البيانات قابلة للتحديث وفقاً لمؤشرات السوق.</p>
+                    <p class="mt-1">تصميم وإعداد متوافق مع كافة الأجهزة الذكية © 2026</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        // Updated with precise centers manually adjusted for main districts
+        const initialDistrictsData = [
+            // ================== الرياض ==================
+            { id: 1, city: "الرياض", name: "الملقا", region: "شمال الرياض", price: 6800, change: 0.5, demand: "عالي جداً", lat: 24.8143, lng: 46.6026 },
+            { id: 2, city: "الرياض", name: "حطين", region: "شمال الرياض", price: 7400, change: 0.8, demand: "عالي جداً", lat: 24.7554, lng: 46.6111 },
+            { id: 3, city: "الرياض", name: "الياسمين", region: "شمال الرياض", price: 5600, change: -0.2, demand: "عالي", lat: 24.8197, lng: 46.6437 },
+            { id: 4, city: "الرياض", name: "النرجس", region: "شمال الرياض", price: 4900, change: 1.2, demand: "عالي جداً", lat: 24.8468, lng: 46.6669 },
+            { id: 5, city: "الرياض", name: "العارض", region: "شمال الرياض", price: 4200, change: -0.5, demand: "عالي", lat: 24.8770, lng: 46.6341 },
+            { id: 6, city: "الرياض", name: "الصحافة", region: "شمال الرياض", price: 6100, change: 0.1, demand: "متوسط", lat: 24.7937, lng: 46.6322 },
+            { id: 7, city: "الرياض", name: "الرمال", region: "شرق الرياض", price: 2700, change: -0.8, demand: "عالي جداً", lat: 24.8624, lng: 46.7869 },
+            { id: 8, city: "الرياض", name: "المونسية", region: "شرق الرياض", price: 3800, change: 0.4, demand: "عالي", lat: 24.8369, lng: 46.7645 },
+            { id: 9, city: "الرياض", name: "القادسية", region: "شرق الرياض", price: 3100, change: 0.0, demand: "متوسط", lat: 24.8219, lng: 46.8049 },
+            { id: 10, city: "الرياض", name: "قرطبة", region: "شرق الرياض", price: 4800, change: 0.6, demand: "عالي", lat: 24.8143, lng: 46.7291 },
+            { id: 11, city: "الرياض", name: "اشبيلية", region: "شرق الرياض", price: 4300, change: -0.3, demand: "متوسط", lat: 24.7868, lng: 46.7725 },
+            { id: 12, city: "الرياض", name: "ظهرة لبن", region: "غرب الرياض", price: 2400, change: 0.2, demand: "عالي", lat: 24.6293, lng: 46.5599 },
+            { id: 13, city: "الرياض", name: "طويق", region: "غرب الرياض", price: 2100, change: -0.1, demand: "مرتفع", lat: 24.5804, lng: 46.5385 },
+            { id: 14, city: "الرياض", name: "نمار", region: "غرب الرياض", price: 1950, change: 0.0, demand: "متوسط", lat: 24.5367, lng: 46.6212 },
+            { id: 15, city: "الرياض", name: "السويدي", region: "غرب الرياض", price: 2800, change: -0.4, demand: "مستقر", lat: 24.5822, lng: 46.6575 },
+            { id: 16, city: "الرياض", name: "الشفا", region: "جنوب الرياض", price: 1850, change: -0.2, demand: "متوسط", lat: 24.5348, lng: 46.7029 },
+            { id: 17, city: "الرياض", name: "العزيزية", region: "جنوب الرياض", price: 1700, change: 0.1, demand: "مستقر", lat: 24.5681, lng: 46.7602 },
+            { id: 18, city: "الرياض", name: "الدار البيضاء", region: "جنوب الرياض", price: 1600, change: -0.5, demand: "مستقر", lat: 24.5312, lng: 46.7761 },
+            { id: 19, city: "الرياض", name: "الملز", region: "وسط الرياض", price: 3700, change: 0.0, demand: "مستقر", lat: 24.6644, lng: 46.7329 },
+            { id: 20, city: "الرياض", name: "المربع", region: "وسط الرياض", price: 3200, change: -0.1, demand: "مستقر", lat: 24.6521, lng: 46.7118 },
+            { id: 21, city: "الرياض", name: "الضباط", region: "وسط الرياض", price: 3900, change: 0.3, demand: "متوسط", lat: 24.6859, lng: 46.7259 },
+
+            // ================== جدة ==================
+            { id: 22, city: "جدة", name: "الشاطئ", region: "شمال جدة", price: 6200, change: 1.1, demand: "عالي جداً", lat: 21.5976, lng: 39.1172 },
+            { id: 23, city: "جدة", name: "المرجان", region: "شمال جدة", price: 5800, change: 0.4, demand: "عالي", lat: 21.6441, lng: 39.1147 },
+            { id: 24, city: "جدة", name: "البساتين", region: "شمال جدة", price: 5500, change: 0.2, demand: "عالي", lat: 21.6504, lng: 39.1353 },
+            { id: 25, city: "جدة", name: "المحمدية", region: "شمال جدة", price: 5200, change: -0.1, demand: "مرتفع", lat: 21.6247, lng: 39.1378 },
+            { id: 26, city: "جدة", name: "النعيم", region: "شمال جدة", price: 4500, change: 0.5, demand: "متوسط", lat: 21.6231, lng: 39.1554 },
+            { id: 27, city: "جدة", name: "النهضة", region: "شمال جدة", price: 4800, change: -0.2, demand: "عالي", lat: 21.6053, lng: 39.1381 },
+            { id: 28, city: "جدة", name: "الزهراء", region: "شمال جدة", price: 5100, change: 0.3, demand: "مرتفع", lat: 21.5833, lng: 39.1417 },
+            { id: 29, city: "جدة", name: "أبحر الشمالية", region: "شمال جدة", price: 3300, change: 1.5, demand: "عالي جداً", lat: 21.7580, lng: 39.0833 },
+            { id: 30, city: "جدة", name: "أبحر الجنوبية", region: "شمال جدة", price: 3600, change: 0.8, demand: "عالي", lat: 21.7131, lng: 39.1021 },
+            { id: 31, city: "جدة", name: "الخالدية", region: "وسط جدة", price: 5300, change: 0.0, demand: "مستقر", lat: 21.5645, lng: 39.1394 },
+            { id: 32, city: "جدة", name: "الروضة", region: "وسط جدة", price: 4500, change: 0.1, demand: "عالي", lat: 21.5542, lng: 39.1505 },
+            { id: 33, city: "جدة", name: "الأندلس", region: "وسط جدة", price: 5000, change: -0.4, demand: "مستقر", lat: 21.5361, lng: 39.1528 },
+            { id: 34, city: "جدة", name: "الحمراء", region: "وسط جدة", price: 4900, change: -0.3, demand: "مستقر", lat: 21.5222, lng: 39.1583 },
+            { id: 35, city: "جدة", name: "الرويس", region: "وسط جدة", price: 3800, change: 0.2, demand: "متوسط", lat: 21.5204, lng: 39.1764 },
+            { id: 36, city: "جدة", name: "السلامة", region: "وسط جدة", price: 4100, change: 0.4, demand: "مرتفع", lat: 21.5947, lng: 39.1601 },
+            { id: 37, city: "جدة", name: "البوادي", region: "وسط جدة", price: 3500, change: -0.1, demand: "متوسط", lat: 21.6019, lng: 39.1754 },
+            { id: 38, city: "جدة", name: "الصفا", region: "وسط جدة", price: 3200, change: 0.5, demand: "عالي", lat: 21.5837, lng: 39.2066 },
+            { id: 39, city: "جدة", name: "المروة", region: "شرق جدة", price: 2900, change: 0.2, demand: "مرتفع", lat: 21.6166, lng: 39.2137 },
+            { id: 40, city: "جدة", name: "الحمدانية", region: "شرق جدة", price: 2100, change: 0.7, demand: "عالي", lat: 21.7275, lng: 39.2081 },
+            { id: 41, city: "جدة", name: "السامر", region: "شرق جدة", price: 2500, change: 0.1, demand: "متوسط", lat: 21.5996, lng: 39.2485 },
+            { id: 42, city: "جدة", name: "النسيم", region: "جنوب جدة", price: 3400, change: -0.2, demand: "مستقر", lat: 21.5034, lng: 39.2312 },
+
+            // ================== الخبر ==================
+            { id: 43, city: "الخبر", name: "الحزام الذهبي", region: "الخبر", price: 4200, change: 0.5, demand: "عالي جداً", lat: 26.3129, lng: 50.2104 },
+            { id: 44, city: "الخبر", name: "الحزام الأخضر", region: "الخبر", price: 4000, change: 0.3, demand: "عالي", lat: 26.3059, lng: 50.2078 },
+            { id: 45, city: "الخبر", name: "العليا", region: "الخبر", price: 3800, change: 0.2, demand: "عالي", lat: 26.3075, lng: 50.1802 },
+            { id: 46, city: "الخبر", name: "الكورنيش", region: "الخبر", price: 4500, change: 0.8, demand: "عالي جداً", lat: 26.2995, lng: 50.2223 },
+            { id: 47, city: "الخبر", name: "الراكة الجنوبية", region: "الخبر", price: 3500, change: -0.2, demand: "متوسط", lat: 26.3533, lng: 50.1983 },
+            { id: 48, city: "الخبر", name: "العقربية", region: "الخبر", price: 2900, change: -0.1, demand: "مستقر", lat: 26.2875, lng: 50.1979 },
+            { id: 49, city: "الخبر", name: "الخبر الشمالية", region: "الخبر", price: 2500, change: 0.4, demand: "متوسط", lat: 26.2942, lng: 50.2086 },
+            { id: 50, city: "الخبر", name: "الخبر الجنوبية", region: "الخبر", price: 2100, change: -0.3, demand: "مستقر", lat: 26.2736, lng: 50.2114 },
+            { id: 51, city: "الخبر", name: "الثقبة", region: "الخبر", price: 1800, change: 0.1, demand: "مرتفع", lat: 26.2727, lng: 50.1838 },
+            { id: 52, city: "الخبر", name: "الجسر", region: "الخبر", price: 2600, change: 0.5, demand: "عالي", lat: 26.2235, lng: 50.1945 },
+            { id: 53, city: "الخبر", name: "الروابي", region: "الخبر", price: 3100, change: 0.2, demand: "متوسط", lat: 26.3263, lng: 50.2113 },
+            { id: 54, city: "الخبر", name: "الخزامى", region: "الخبر", price: 2800, change: -0.4, demand: "مستقر", lat: 26.2307, lng: 50.1717 },
+            { id: 55, city: "الخبر", name: "التحلية", region: "الخبر", price: 3100, change: 0.8, demand: "مرتفع", lat: 26.2241, lng: 50.1743 },
+            { id: 56, city: "الخبر", name: "الهدا", region: "الخبر", price: 3200, change: 0.0, demand: "متوسط", lat: 26.3278, lng: 50.1824 },
+            { id: 57, city: "الخبر", name: "الأندلس", region: "الخبر", price: 3300, change: -0.1, demand: "مستقر", lat: 26.3307, lng: 50.1923 },
+            { id: 58, city: "الخبر", name: "الجوهرة", region: "الخبر", price: 2700, change: 0.3, demand: "متوسط", lat: 26.3402, lng: 50.1911 },
+            { id: 59, city: "الخبر", name: "قرطبة", region: "الخبر", price: 2900, change: 0.1, demand: "مرتفع", lat: 26.3475, lng: 50.1895 },
+            { id: 60, city: "الخبر", name: "الشراع", region: "عزيزية الخبر", price: 1900, change: 1.2, demand: "عالي", lat: 26.1772, lng: 50.1856 },
+            { id: 61, city: "الخبر", name: "الأمواج", region: "عزيزية الخبر", price: 1850, change: 0.9, demand: "عالي", lat: 26.1553, lng: 50.1764 },
+            { id: 62, city: "الخبر", name: "التعاون", region: "الخبر", price: 2400, change: 0.2, demand: "متوسط", lat: 26.2275, lng: 50.1869 }
+        ];
+
+        let currentDistricts = [];
+        let viewMode = 'cards';
+        let marketChart = null; 
+        
+        let leafletMap = null;
+        let mapMarker = null;
+        let mapCircle = null; // New circle variable
+        let osmLayer = null;
+        
+        // Changed version to 7 to force reset local cache for exact coordinates
+        const UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
+        const STORAGE_KEY_DATA = 'bourse_districts_data_v7';
+        const STORAGE_KEY_DATE = 'bourse_last_update_v7';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }, 800);
+            }, 2500);
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('theme-icon');
+            if (isDark && icon) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+
+            initializeData();
+            updateRegions();
+            populateModalSelect();
+            setViewMode('cards');
+            startCountdownTimer();
+            initLeafletMapLayers();
+        });
+
+        function initLeafletMapLayers() {
+            // Using Esri World Street Map - highly reliable
+            osmLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri',
+                maxZoom: 19
+            });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('bourse_theme', isDark ? 'dark' : 'light');
+            
+            const icon = document.getElementById('theme-icon');
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+            
+            setViewMode(viewMode); 
+        }
+
+        function initializeData() {
+            const lastUpdate = localStorage.getItem(STORAGE_KEY_DATE);
+            const storedData = localStorage.getItem(STORAGE_KEY_DATA);
+            const now = new Date().getTime();
+
+            if (!lastUpdate || (now - parseInt(lastUpdate)) >= UPDATE_INTERVAL || !storedData) {
+                generateNewBourseData();
+            } else {
+                currentDistricts = JSON.parse(storedData);
+            }
+        }
+
+        function generateNewBourseData() {
+            currentDistricts = initialDistrictsData.map(item => {
+                const percentage = (Math.random() * 4 - 1.5); 
+                const priceDiff = Math.round(item.price * (percentage / 100));
+                return {
+                    ...item,
+                    price: item.price + priceDiff,
+                    change: parseFloat(percentage.toFixed(2))
+                };
+            });
+            
+            localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(currentDistricts));
+            localStorage.setItem(STORAGE_KEY_DATE, new Date().getTime().toString());
+            populateModalSelect();
+        }
+
+        function forceRefreshData() {
+            generateNewBourseData();
+            applyFilters();
+            showToast('تم مزامنة الأسعار بنجاح!');
+        }
+
+        function startCountdownTimer() {
+            setInterval(() => {
+                const lastUpdate = parseInt(localStorage.getItem(STORAGE_KEY_DATE)) || 0;
+                const now = new Date().getTime();
+                const nextUpdate = lastUpdate + UPDATE_INTERVAL;
+                const diff = nextUpdate - now;
+
+                if (diff <= 0) {
+                    generateNewBourseData();
+                    applyFilters();
+                } else {
+                    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((diff % (1000 * 60)) / 1000);
+                    document.getElementById('next-update-timer').innerText = 
+                        `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function updateRegions() {
+            const city = document.getElementById('cityFilter').value;
+            const regionFilter = document.getElementById('regionFilter');
+            regionFilter.innerHTML = '<option value="all">كل المناطق</option>';
+            
+            const regions = new Set();
+            currentDistricts.forEach(d => {
+                if (city === 'all' || d.city === city) {
+                    regions.add(d.region);
+                }
+            });
+
+            regions.forEach(r => {
+                regionFilter.innerHTML += `<option value="${r}">${r}</option>`;
+            });
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const selectedCity = document.getElementById('cityFilter').value;
+            const selectedRegion = document.getElementById('regionFilter').value;
+            const sortBy = document.getElementById('sortOption').value;
+
+            let filtered = currentDistricts.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm);
+                const matchesCity = (selectedCity === 'all' || item.city === selectedCity);
+                const matchesRegion = (selectedRegion === 'all' || item.region === selectedRegion);
+                return matchesSearch && matchesCity && matchesRegion;
+            });
+
+            if (sortBy === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+            else if (sortBy === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+            else if (sortBy === 'change-desc') filtered.sort((a, b) => b.change - a.change);
+
+            document.getElementById('displayed-count').innerText = filtered.length;
+
+            renderStats(filtered);
+            
+            if (viewMode === 'cards') renderCards(filtered);
+            else if (viewMode === 'table') renderTable(filtered);
+            else if (viewMode === 'chart') renderChart(filtered);
+        }
+
+        function renderStats(data) {
+            if (data.length === 0) {
+                document.getElementById('stat-avg-price').innerText = '0';
+                document.getElementById('stat-highest-district').innerText = '-';
+                document.getElementById('stat-highest-price').innerText = '0 ر.س';
+                document.getElementById('stat-lowest-district').innerText = '-';
+                document.getElementById('stat-lowest-price').innerText = '0 ر.س';
+                document.getElementById('stat-total-districts').innerText = '0';
+                return;
+            }
+            const sum = data.reduce((acc, curr) => acc + curr.price, 0);
+            const avg = Math.round(sum / data.length);
+            const sorted = [...data].sort((a, b) => b.price - a.price);
+
+            document.getElementById('stat-avg-price').innerText = avg.toLocaleString('ar-SA');
+            document.getElementById('stat-highest-district').innerText = sorted[0].name;
+            document.getElementById('stat-highest-price').innerText = sorted[0].price.toLocaleString('ar-SA') + ' ر.س';
+            document.getElementById('stat-lowest-district').innerText = sorted[sorted.length - 1].name;
+            document.getElementById('stat-lowest-price').innerText = sorted[sorted.length - 1].price.toLocaleString('ar-SA') + ' ر.س';
+            document.getElementById('stat-total-districts').innerText = data.length;
+        }
+
+        function renderCards(districts) {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            districts.forEach(item => {
+                const isPos = item.change >= 0;
+                container.innerHTML += `
+                    <div class="clay-card rounded-2xl p-5 relative border-2 border-najd-border dark:border-[#0a2e26] flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="text-[10px] font-bold text-najd-white bg-najd-logogreen dark:bg-najd-sand dark:text-najd-dark px-2 py-0.5 rounded-full">${item.city}</span>
+                                    <h3 class="font-amiri text-xl font-bold text-najd-sand mt-1">حي ${item.name}</h3>
+                                </div>
+                                <div class="text-left">
+                                    <span class="block text-2xl font-black text-najd-logogreen dark:text-najd-cream">${item.price.toLocaleString('ar-SA')}</span>
+                                    <span class="text-[10px] text-najd-clay dark:text-najd-sand/70">ريال/م²</span>
+                                </div>
+                            </div>
+                            <div class="pt-2 border-t border-najd-border/60 dark:border-[#0a2e26] flex justify-between text-xs font-bold mb-3">
+                                <span class="${isPos ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} dir-ltr">${isPos?'+':''}${item.change}%</span>
+                                <span class="text-najd-clay dark:text-najd-sand/70">الطلب: <span class="text-najd-logogreen dark:text-najd-sand">${item.demand}</span></span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <button onclick="event.stopPropagation(); openCalcForDistrict(${item.id})" class="w-full text-najd-logogreen dark:text-najd-dark font-bold flex items-center justify-center gap-1.5 bg-najd-logogreen/10 hover:bg-najd-logogreen dark:bg-najd-sand dark:hover:bg-[#cba377] hover:text-najd-white transition-colors px-1 py-2 rounded-lg text-xs">
+                                <i class="fa-solid fa-calculator"></i> حاسبة
+                            </button>
+                            <button onclick="event.stopPropagation(); openMapForDistrict(${item.id})" class="w-full text-najd-logogreen dark:text-najd-dark font-bold flex items-center justify-center gap-1.5 bg-najd-logogreen/10 hover:bg-najd-logogreen dark:bg-najd-sand dark:hover:bg-[#cba377] hover:text-najd-white transition-colors px-1 py-2 rounded-lg text-xs border border-transparent dark:border-najd-sand/20">
+                                <i class="fa-solid fa-map-location-dot"></i> الخريطة
+                            </button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function renderTable(districts) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            districts.forEach(item => {
+                const isPos = item.change >= 0;
+                tbody.innerHTML += `
+                    <tr class="border-b border-najd-border/30 dark:border-[#0a2e26] hover:bg-najd-cream/50 dark:hover:bg-[#0a2e26]/30">
+                        <td class="p-3 font-bold text-najd-clay dark:text-najd-sand/70">${item.city}</td>
+                        <td class="p-3 font-bold text-najd-sand dark:text-najd-cream">حي ${item.name}</td>
+                        <td class="p-3 text-xs dark:text-najd-sand/80">${item.region}</td>
+                        <td class="p-3 font-black text-najd-logogreen dark:text-najd-sand">${item.price.toLocaleString('ar-SA')} ر.س</td>
+                        <td class="p-3 ${isPos ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} dir-ltr">${isPos?'+':''}${item.change}%</td>
+                        <td class="p-3 text-xs dark:text-najd-sand/80">${item.demand}</td>
+                        <td class="p-3 text-center flex justify-center gap-2">
+                            <button onclick="event.stopPropagation(); openCalcForDistrict(${item.id})" title="حاسبة المساحة" class="w-8 h-8 flex items-center justify-center text-xs bg-najd-logogreen dark:bg-najd-sand text-najd-sand dark:text-najd-dark rounded-lg hover:bg-najd-dark dark:hover:bg-[#cba377] transition-colors shadow-sm font-bold">
+                                <i class="fa-solid fa-calculator"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openMapForDistrict(${item.id})" title="الخريطة" class="w-8 h-8 flex items-center justify-center text-xs border border-najd-logogreen dark:border-najd-sand text-najd-logogreen dark:text-najd-sand rounded-lg hover:bg-najd-logogreen dark:hover:bg-najd-sand hover:text-najd-white dark:hover:text-[#041410] transition-colors shadow-sm font-bold">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function renderChart(districts) {
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            let chartData = districts;
+            if (districts.length > 20) {
+                chartData = [...districts].sort((a,b) => b.price - a.price).slice(0, 20);
+            }
+
+            const labels = chartData.map(d => d.city + ' - ' + d.name);
+            const prices = chartData.map(d => d.price);
+
+            if (marketChart) {
+                marketChart.destroy();
+            }
+
+            const textColor = isDark ? '#e0b888' : '#0a2e26';
+            const gridColor = isDark ? 'rgba(224, 184, 136, 0.1)' : 'rgba(212, 198, 182, 0.4)';
+            const bgColor = isDark ? '#e0b888' : '#0a2e26';
+            const bdrColor = isDark ? '#0a2e26' : '#e0b888';
+
+            marketChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'متوسط السعر (ريال/م²)',
+                        data: prices,
+                        backgroundColor: bgColor,
+                        borderColor: bdrColor,
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            grid: { color: gridColor },
+                            ticks: { font: { family: 'Tajawal' }, color: textColor }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Tajawal' }, color: textColor,
+                                maxRotation: 45, minRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { font: { family: 'Tajawal', size: 14, weight: 'bold' }, color: textColor }
+                        },
+                        tooltip: {
+                            titleFont: { family: 'Tajawal' }, bodyFont: { family: 'Tajawal' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            
+            document.getElementById('cards-container').classList.toggle('hidden', mode !== 'cards');
+            document.getElementById('table-container').classList.toggle('hidden', mode !== 'table');
+            document.getElementById('chart-container').classList.toggle('hidden', mode !== 'chart');
+            
+            const btns = {
+                'cards': document.getElementById('view-cards-btn'),
+                'table': document.getElementById('view-table-btn'),
+                'chart': document.getElementById('view-chart-btn')
+            };
+
+            for (const [key, btn] of Object.entries(btns)) {
+                if (key === mode) {
+                    btn.className = `px-3 py-1.5 rounded-lg border transition-all bg-najd-logogreen text-najd-white border-najd-logogreen dark:bg-najd-sand dark:text-[#041410] dark:border-najd-sand`;
+                } else {
+                    btn.className = `px-3 py-1.5 rounded-lg border transition-all bg-najd-white text-najd-logogreen border-najd-border hover:border-najd-logogreen dark:bg-[#071f1a] dark:text-najd-sand dark:border-[#0a2e26] dark:hover:border-najd-sand`;
+                }
+            }
+
+            applyFilters();
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const isDark = document.documentElement.classList.contains('dark');
+            const bgClass = isDark ? 'bg-najd-sand text-[#041410] border-[#0a2e26]' : 'bg-najd-logogreen text-najd-sand border-najd-sand/30';
+            container.innerHTML = `<div class="${bgClass} p-3 rounded shadow-lg text-sm border font-bold">${msg}</div>`;
+            setTimeout(() => container.innerHTML = '', 3000);
+        }
+
+        function populateModalSelect() {
+            const select = document.getElementById('modal-district-select');
+            select.innerHTML = '';
+            currentDistricts.forEach(d => {
+                select.innerHTML += `<option value="${d.id}">${d.city} - حي ${d.name} (${d.price.toLocaleString('ar-SA')} ر.س/م²)</option>`;
+            });
+            calculateEstimatedTotal();
+        }
+
+        function openModal(modalId) { 
+            document.getElementById(modalId).classList.remove('hidden'); 
+        }
+        function closeModal(modalId) { 
+            document.getElementById(modalId).classList.add('hidden'); 
+        }
+
+        function openCalcForDistrict(id) {
+            document.getElementById('modal-district-select').value = id;
+            calculateEstimatedTotal();
+            openModal('calcModal');
+        }
+
+        function openMapForDistrict(id) {
+            const district = currentDistricts.find(d => d.id === id);
+            if (!district) return;
+
+            document.getElementById('map-modal-title').innerText = `${district.city} - حي ${district.name}`;
+            openModal('mapModal');
+
+            setTimeout(() => {
+                if (!leafletMap) {
+                    leafletMap = L.map('district-map', {
+                        zoomControl: false 
+                    }).setView([district.lat, district.lng], 13);
+                    
+                    L.control.zoom({ position: 'topleft' }).addTo(leafletMap);
+                    osmLayer.addTo(leafletMap);
+                }
+
+                leafletMap.invalidateSize();
+                
+                leafletMap.setView([district.lat, district.lng], 14);
+
+                if (mapMarker) {
+                    leafletMap.removeLayer(mapMarker);
+                }
+                if (mapCircle) {
+                    leafletMap.removeLayer(mapCircle);
+                }
+
+                // إضافة دائرة تمثل مساحة الحي بشكل تقريبي
+                mapCircle = L.circle([district.lat, district.lng], {
+                    color: document.documentElement.classList.contains('dark') ? '#e0b888' : '#0a2e26',
+                    fillColor: document.documentElement.classList.contains('dark') ? '#e0b888' : '#0a2e26',
+                    fillOpacity: 0.15,
+                    radius: 1200 // نصف قطر تقريبي لمساحة الحي 1.2 كيلو
+                }).addTo(leafletMap);
+
+                const customIcon = L.divIcon({
+                    html: `<div style="background-color: #0a2e26; border: 2px solid #e0b888; width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>`,
+                    className: '',
+                    iconSize: [18, 18],
+                    iconAnchor: [9, 9]
+                });
+
+                mapMarker = L.marker([district.lat, district.lng], { icon: customIcon }).addTo(leafletMap);
+                
+                const popupContent = `
+                    <div style="text-align:center; font-family:'Tajawal', sans-serif;">
+                        <strong style="display:block; font-size:16px;">محيط حي ${district.name}</strong>
+                        <span style="font-size:14px;">${district.price.toLocaleString('ar-SA')} ر.س/م²</span>
+                    </div>
+                `;
+                mapMarker.bindPopup(popupContent).openPopup();
+                
+            }, 300);
+        }
+
+        function calculateEstimatedTotal() {
+            const districtId = parseInt(document.getElementById('modal-district-select').value);
+            const area = parseFloat(document.getElementById('modal-area-input').value) || 0;
+            const district = currentDistricts.find(d => d.id === districtId);
+            if (district) {
+                const total = Math.round(district.price * area);
+                document.getElementById('modal-total-price').innerText = total.toLocaleString('ar-SA');
+            }
+        }
+
+        window.onclick = function(event) {
+            const calcModalEl = document.getElementById('calcModal');
+            const mapModalEl = document.getElementById('mapModal');
+            if (event.target == calcModalEl) closeModal('calcModal');
+            if (event.target == mapModalEl) closeModal('mapModal');
+        }
+
+    </script>
+</body>
+</html>
