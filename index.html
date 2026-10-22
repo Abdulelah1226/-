@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <link rel="icon" type="image/png" href="title.logo.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مرصد العبدلية | دليل العقارات</title>
+    <title>منصة العبدلية | دليل العقارات</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -218,7 +217,7 @@
         <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#e0b888 1px, transparent 1px); background-size: 24px 24px;"></div>
         
         <div class="relative z-10 text-center">
-            <img src="logo.png" alt="logo.png" class="h-40 sm:h-56 w-auto mx-auto splash-logo-animate drop-shadow-[0_15px_35px_rgba(224,184,136,0.25)]">
+            <img src="شعار مرصد العبدلية.png" alt="مرصد العبدلية" class="h-40 sm:h-56 w-auto mx-auto splash-logo-animate drop-shadow-[0_15px_35px_rgba(224,184,136,0.25)]">
             
             <div class="mt-8 flex justify-center items-center gap-3">
                 <div class="w-3 h-3 bg-najd-sand rounded-full animate-bounce" style="animation-delay: 0s"></div>
@@ -262,12 +261,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             
             <div class="mb-4 flex justify-center">
-                <img src="logo.png" alt="logo.png" class="h-28 sm:h-36 w-auto object-contain rounded-2xl shadow-2xl border-2 border-najd-sand/80 bg-najd-logogreen p-1 backdrop-blur-sm">
+                <img src="شعار مرصد العبدلية.png" alt="شعار مرصد العبدلية لعقارات الرياض" class="h-28 sm:h-36 w-auto object-contain rounded-2xl shadow-2xl border-2 border-najd-sand/80 bg-najd-logogreen p-1 backdrop-blur-sm">
             </div>
 
-                            </span>
+            <div class="mb-3">
+                <span class="inline-block px-4 py-1 rounded-full bg-najd-dark/60 text-najd-sand text-xs sm:text-sm font-bold border border-najd-sand/40 mb-2 backdrop-blur-md">
+                    🏛️ «من طِينِ نَجْدٍ وَعَرَاقَةِ المَبْنَى.. مَثْوَى الأَصَالَةِ وَعِزِّ المَعْنَى»
+                </span>
                 <h1 class="font-amiri font-bold tracking-wide text-najd-sand drop-shadow-lg" style="font-size: 2.3rem; margin-top: 18px; line-height: 1.5; color: #e0b888;">
-                    مَرْصَدُ العَبْدَلِيَّةِ العَقَارِي
+                    مَرْصَدُ العَبْدَلِيَّةِ العَقَارِيَّة
                 </h1>
             </div>
             <p class="text-sm sm:text-lg max-w-2xl mx-auto text-najd-sand/90 font-medium leading-relaxed">
@@ -482,7 +484,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-right">
                 <div>
-                    <h3 class="font-amiri text-xl font-bold text-najd-sand">مَرْصَدُ العَبْدَلِيَّةِ العَقَارِي</h3>
+                    <h3 class="font-amiri text-xl font-bold text-najd-sand">مَرْصَدُ العَبْدَلِيَّةِ العَقَارِيَّة</h3>
                     <p class="text-xs text-najd-cream/70 mt-1">
                         مرصد مستقل لرصد حركة ومتوسط أسعار المتر المربع في المملكة.
                     </p>
@@ -500,7 +502,7 @@
         // Updated with precise centers manually adjusted for main districts
         const initialDistrictsData = [
             // ================== الرياض ==================
-            { id: 1, city: "الرياض", name: "الملقا", region: "شمال الرياض", price: 6800, change: 0.5, demand: "عالي جداً", lat: 24.8143, lng: 46.6026 },
+            { id: 1, city: "الرياض", name: "الملقا", region: "شمال الرياض", price: 6800, change: 0.5, demand: "عالي جداً", lat: 24.8143, lng: 46.6026, polygon: [[24.8329, 46.5898], [24.8214, 46.6213], [24.7958, 46.6111], [24.8095, 46.5772]] },
             { id: 2, city: "الرياض", name: "حطين", region: "شمال الرياض", price: 7400, change: 0.8, demand: "عالي جداً", lat: 24.7554, lng: 46.6111 },
             { id: 3, city: "الرياض", name: "الياسمين", region: "شمال الرياض", price: 5600, change: -0.2, demand: "عالي", lat: 24.8197, lng: 46.6437 },
             { id: 4, city: "الرياض", name: "النرجس", region: "شمال الرياض", price: 4900, change: 1.2, demand: "عالي جداً", lat: 24.8468, lng: 46.6669 },
@@ -579,8 +581,8 @@
         
         // Changed version to 7 to force reset local cache for exact coordinates
         const UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
-        const STORAGE_KEY_DATA = 'bourse_districts_data_v7';
-        const STORAGE_KEY_DATE = 'bourse_last_update_v7';
+        const STORAGE_KEY_DATA = 'bourse_districts_data_v8';
+        const STORAGE_KEY_DATE = 'bourse_last_update_v8';
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -647,9 +649,16 @@
             currentDistricts = initialDistrictsData.map(item => {
                 const percentage = (Math.random() * 4 - 1.5); 
                 const priceDiff = Math.round(item.price * (percentage / 100));
+                const currentAvg = item.price + priceDiff;
+                const rangeVariance = 0.05 + (Math.random() * 0.10); // تفاوت بين 5% إلى 15%
+                const minP = Math.round((currentAvg * (1 - rangeVariance)) / 50) * 50;
+                const maxP = Math.round((currentAvg * (1 + rangeVariance)) / 50) * 50;
+                
                 return {
                     ...item,
-                    price: item.price + priceDiff,
+                    price: currentAvg,
+                    minPrice: minP,
+                    maxPrice: maxP,
                     change: parseFloat(percentage.toFixed(2))
                 };
             });
@@ -764,7 +773,7 @@
                                     <h3 class="font-amiri text-xl font-bold text-najd-sand mt-1">حي ${item.name}</h3>
                                 </div>
                                 <div class="text-left">
-                                    <span class="block text-2xl font-black text-najd-logogreen dark:text-najd-cream">${item.price.toLocaleString('ar-SA')}</span>
+                                    <span class="block text-lg font-black text-najd-logogreen dark:text-najd-cream" dir="rtl">${item.minPrice.toLocaleString('ar-SA')} - ${item.maxPrice.toLocaleString('ar-SA')}</span>
                                     <span class="text-[10px] text-najd-clay dark:text-najd-sand/70">ريال/م²</span>
                                 </div>
                             </div>
@@ -795,7 +804,7 @@
                         <td class="p-3 font-bold text-najd-clay dark:text-najd-sand/70">${item.city}</td>
                         <td class="p-3 font-bold text-najd-sand dark:text-najd-cream">حي ${item.name}</td>
                         <td class="p-3 text-xs dark:text-najd-sand/80">${item.region}</td>
-                        <td class="p-3 font-black text-najd-logogreen dark:text-najd-sand">${item.price.toLocaleString('ar-SA')} ر.س</td>
+                        <td class="p-3 font-black text-najd-logogreen dark:text-najd-sand" dir="rtl">${item.minPrice.toLocaleString('ar-SA')} - ${item.maxPrice.toLocaleString('ar-SA')} ر.س</td>
                         <td class="p-3 ${isPos ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} dir-ltr">${isPos?'+':''}${item.change}%</td>
                         <td class="p-3 text-xs dark:text-najd-sand/80">${item.demand}</td>
                         <td class="p-3 text-center flex justify-center gap-2">
@@ -909,7 +918,7 @@
             const select = document.getElementById('modal-district-select');
             select.innerHTML = '';
             currentDistricts.forEach(d => {
-                select.innerHTML += `<option value="${d.id}">${d.city} - حي ${d.name} (${d.price.toLocaleString('ar-SA')} ر.س/م²)</option>`;
+                select.innerHTML += `<option value="${d.id}">${d.city} - حي ${d.name} (متوسط ${d.price.toLocaleString('ar-SA')} ر.س/م²)</option>`;
             });
             calculateEstimatedTotal();
         }
@@ -955,12 +964,35 @@
                     leafletMap.removeLayer(mapCircle);
                 }
 
-                // إضافة دائرة تمثل مساحة الحي بشكل تقريبي
-                mapCircle = L.circle([district.lat, district.lng], {
+                // دالة لرسم مضلع متعرج يحاكي حدود الحي بدلا من الدائرة
+                function generateIrregularPolygon(centerLat, centerLng, radiusInDegrees, numPoints) {
+                    const points = [];
+                    // استخدام seed بناء على معرف الحي عشان يثبت شكل المضلع لنفس الحي
+                    let seed = district.id;
+                    function random() {
+                        let x = Math.sin(seed++) * 10000;
+                        return x - Math.floor(x);
+                    }
+
+                    for (let i = 0; i < numPoints; i++) {
+                        const angle = (i / numPoints) * Math.PI * 2;
+                        const r = radiusInDegrees * (0.6 + random() * 0.6); // تفاوت في الأبعاد
+                        const lat = centerLat + r * Math.cos(angle);
+                        const lng = centerLng + (r * Math.sin(angle) / Math.cos(centerLat * Math.PI / 180));
+                        points.push([lat, lng]);
+                    }
+                    return points;
+                }
+
+                // إذا كان الحي مضاف له مضلع يدوي نستخدمه، وإلا نولد واحد عشوائي
+                const polygonPoints = district.polygon ? district.polygon : generateIrregularPolygon(district.lat, district.lng, 0.015, 8);
+
+                mapCircle = L.polygon(polygonPoints, {
                     color: document.documentElement.classList.contains('dark') ? '#e0b888' : '#0a2e26',
                     fillColor: document.documentElement.classList.contains('dark') ? '#e0b888' : '#0a2e26',
                     fillOpacity: 0.15,
-                    radius: 1200 // نصف قطر تقريبي لمساحة الحي 1.2 كيلو
+                    weight: 2,
+                    dashArray: '5, 5' // حدود متقطعة تعطي طابع الخرائط التنظيمية
                 }).addTo(leafletMap);
 
                 const customIcon = L.divIcon({
@@ -975,7 +1007,7 @@
                 const popupContent = `
                     <div style="text-align:center; font-family:'Tajawal', sans-serif;">
                         <strong style="display:block; font-size:16px;">محيط حي ${district.name}</strong>
-                        <span style="font-size:14px;">${district.price.toLocaleString('ar-SA')} ر.س/م²</span>
+                        <span style="font-size:14px;" dir="rtl">${district.minPrice.toLocaleString('ar-SA')} - ${district.maxPrice.toLocaleString('ar-SA')} ر.س/م²</span>
                     </div>
                 `;
                 mapMarker.bindPopup(popupContent).openPopup();
